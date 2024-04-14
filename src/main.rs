@@ -51,12 +51,12 @@ impl Context {
 async fn new(waitlist_form: Form<WaitlistEntry>, conn: DbConn) -> Flash<Redirect> {
     let waitlist = waitlist_form.into_inner();
     if waitlist.email.is_empty() {
-        Flash::error(Redirect::to("/"), "Description cannot be empty.")
+        Flash::error(Redirect::to("/"), "Email cannot be empty")
     } else if let Err(e) = WaitlistEntry::insert(waitlist, &conn).await {
         error_!("DB insertion error: {}", e);
-        Flash::error(Redirect::to("/"), "Todo could not be inserted due an internal error.")
+        Flash::error(Redirect::to("/"), "Entry could not be inserted due an internal error.")
     } else {
-        Flash::success(Redirect::to("/"), "Todo successfully added.")
+        Flash::success(Redirect::to("/"), "Successfully added to waitlist")
     }
 }
 
@@ -66,7 +66,7 @@ async fn delete(email: String, conn: DbConn) -> Result<Flash<Redirect>, Template
         Ok(_) => Ok(Flash::success(Redirect::to("/"), "Todo was deleted.")),
         Err(e) => {
             error_!("DB deletion({}) error: {}", email, e);
-            Err(Template::render("index", Context::err(&conn, "Failed to delete task.").await))
+            Err(Template::render("index", Context::err(&conn, "Failed to delete entry").await))
         }
     }
 }
@@ -98,5 +98,6 @@ fn rocket() -> _ {
         .attach(AdHoc::on_ignite("Run Migrations", run_migrations))
         .mount("/", FileServer::from(relative!("static")))
         .mount("/", routes![index])
-        .mount("/todo", routes![new, toggle, delete])
+        .mount("/", routes![delete])
+        .mount("/", routes![new])
 }

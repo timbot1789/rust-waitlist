@@ -16,7 +16,7 @@ use self::schema::waitlist_entries;
 
 use crate::DbConn;
 
-#[derive(Serialize, Queryable, Insertable, Debug, Clone)]
+#[derive(Serialize, Queryable, Insertable, Debug, Clone, FromForm)]
 #[serde(crate = "rocket::serde")]
 #[diesel(table_name = waitlist_entries)]
 pub struct WaitlistEntry{
