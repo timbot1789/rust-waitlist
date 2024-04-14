@@ -63,7 +63,7 @@ async fn new(waitlist_form: Form<WaitlistEntry>, conn: DbConn) -> Flash<Redirect
 #[delete("/<email>")]
 async fn delete(email: String, conn: DbConn) -> Result<Flash<Redirect>, Template> {
     match WaitlistEntry::delete_with_email(email.clone(), &conn).await {
-        Ok(_) => Ok(Flash::success(Redirect::to("/"), "Todo was deleted.")),
+        Ok(_) => Ok(Flash::success(Redirect::to("/"), "Entry was deleted.")),
         Err(e) => {
             error_!("DB deletion({}) error: {}", email, e);
             Err(Template::render("index", Context::err(&conn, "Failed to delete entry").await))
