@@ -3,3 +3,6 @@ template_dir = "static"
 
 [default.databases.sqlite_database]
 url = "db/db.sqlite"
+
+[production]
+address = "0.0.0.0"
